@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#4A90D9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>词斩 - 高效背单词</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">📖</span>
+                    <span class="logo-text">词斩</span>
+                </div>
+                <p class="logo-sub">高效背单词</p>
+            </div>
+            <nav id="nav-menu">
+                <a href="#" data-page="home" class="nav-item active">
+                    <span class="nav-icon">🏠</span><span>首页</span>
+                </a>
+                <a href="#" data-page="learn" class="nav-item">
+                    <span class="nav-icon">📝</span><span>背单词</span>
+                </a>
+                <a href="#" data-page="review" class="nav-item">
+                    <span class="nav-icon">🔄</span><span>复习</span>
+                    <span id="review-badge" class="badge" style="display:none">0</span>
+                </a>
+                <a href="#" data-page="wordlist" class="nav-item">
+                    <span class="nav-icon">📚</span><span>词库</span>
+                </a>
+                <a href="#" data-page="favorites" class="nav-item">
+                    <span class="nav-icon">⭐</span><span>收藏</span>
+                </a>
+                <a href="#" data-page="errors" class="nav-item">
+                    <span class="nav-icon">❌</span><span>错题本</span>
+                </a>
+                <a href="#" data-page="stats" class="nav-item">
+                    <span class="nav-icon">📊</span><span>统计</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="streak-info">
+                    <span>🔥 连续打卡</span>
+                    <strong id="sidebar-streak">0 天</strong>
+                </div>
+            </div>
+        </aside>
+
+        <main id="main-content">
+            <header id="topbar">
+                <button id="menu-toggle" class="icon-btn" title="菜单">☰</button>
+                <span id="page-title">首页</span>
+                <div class="topbar-actions">
+                    <select id="wordlist-select" class="wordlist-picker" title="选择词库">
+                        <option value="cet4">四级词汇</option>
+                        <option value="cet6">六级词汇</option>
+                        <option value="postgrad">考研词汇</option>
+                        <option value="daily">日常英语</option>
+                    </select>
+                </div>
+            </header>
+
+            <div id="page-container">
+                <section id="page-home" class="page active">
+                    <div class="home-grid">
+                        <div class="card stat-card">
+                            <div class="stat-icon">📝</div>
+                            <div class="stat-info">
+                                <span class="stat-label">今日已学</span>
+                                <span class="stat-value" id="today-learned">0</span>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon">🔄</div>
+                            <div class="stat-info">
+                                <span class="stat-label">待复习</span>
+                                <span class="stat-value" id="pending-review">0</span>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-info">
+                                <span class="stat-label">已掌握</span>
+                                <span class="stat-value" id="mastered-count">0</span>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-info">
+                                <span class="stat-label">连续打卡</span>
+                                <span class="stat-value" id="streak-days">0天</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card quick-actions">
+                        <h3>快速开始</h3>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-lg" onclick="navigateTo('learn')">
+                                📝 开始背单词
+                            </button>
+                            <button class="btn btn-secondary btn-lg" onclick="navigateTo('review')">
+                                🔄 复习巩固
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>📅 打卡记录</h3>
+                        <div id="checkin-calendar" class="checkin-grid"></div>
+                    </div>
+
+                    <div class="card">
+                        <h3>📈 学习进度</h3>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+                        </div>
+                        <p class="progress-text" id="progress-text">当前词库进度: 0%</p>
+                    </div>
+                </section>
+
+                <section id="page-learn" class="page">
+                    <div class="learn-container">
+                        <div class="learn-header">
+                            <span id="learn-progress">第 0/0 个</span>
+                            <span id="learn-category">四级词汇</span>
+                        </div>
+
+                        <div class="word-card" id="word-card">
+                            <div class="card-inner" id="card-inner">
+                                <div class="card-front">
+                                    <div class="word-image" id="word-image">📖</div>
+                                    <div class="word-english" id="word-english">abandon</div>
+                                    <div class="word-phonetic" id="word-phonetic">/əˈbændən/</div>
+                                    <p class="tap-hint">点击卡片查看释义</p>
+                                </div>
+                                <div class="card-back">
+                                    <div class="word-chinese" id="word-chinese">v. 放弃；抛弃</div>
+                                    <div class="word-example" id="word-example"></div>
+                                    <div class="word-pos" id="word-pos"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="learn-actions">
+                            <button class="btn btn-danger btn-lg" onclick="answerWord('forgot')">
+                                😕 忘记了
+                            </button>
+                            <button class="btn btn-warning btn-lg" onclick="answerWord('vague')">
+                                🤔 模糊
+                            </button>
+                            <button class="btn btn-success btn-lg" onclick="answerWord('remember')">
+                                😊 记住了
+                            </button>
+                        </div>
+
+                        <div class="learn-extra">
+                            <button class="btn btn-outline btn-sm" onclick="toggleFavorite()" id="btn-favorite">
+                                ⭐ 收藏
+                            </button>
+                            <button class="btn btn-outline btn-sm" onclick="markAsMastered()" id="btn-master">
+                                ✅ 已掌握
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="page-review" class="page">
+                    <div class="learn-container">
+                        <div class="learn-header">
+                            <span id="review-progress">待复习: 0 个</span>
+                            <span>艾宾浩斯复习</span>
+                        </div>
+
+                        <div class="word-card" id="review-card">
+                            <div class="card-inner" id="review-card-inner">
+                                <div class="card-front">
+                                    <div class="word-image review-image">🔄</div>
+                                    <div class="word-english" id="review-english">word</div>
+                                    <div class="word-phonetic" id="review-phonetic"></div>
+                                    <p class="tap-hint">点击卡片查看释义</p>
+                                </div>
+                                <div class="card-back">
+                                    <div class="word-chinese" id="review-chinese">释义</div>
+                                    <div class="word-example" id="review-example"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="learn-actions">
+                            <button class="btn btn-danger btn-lg" onclick="reviewAnswer('forgot')">
+                                😕 忘记了
+                            </button>
+                            <button class="btn btn-warning btn-lg" onclick="reviewAnswer('vague')">
+                                🤔 模糊
+                            </button>
+                            <button class="btn btn-success btn-lg" onclick="reviewAnswer('remember')">
+                                😊 记住了
+                            </button>
+                        </div>
+                    </div>
+                    <div id="review-empty" class="empty-state" style="display:none">
+                        <div class="empty-icon">🎉</div>
+                        <h3>太棒了！暂无需要复习的单词</h3>
+                        <p>去背新单词吧~</p>
+                        <button class="btn btn-primary" onclick="navigateTo('learn')">去背单词</button>
+                    </div>
+                </section>
+
+                <section id="page-wordlist" class="page">
+                    <div class="list-header">
+                        <h3>📚 词库浏览</h3>
+                        <input type="text" id="word-search" class="search-input" placeholder="搜索单词...">
+                    </div>
+                    <div id="word-list" class="word-list"></div>
+                </section>
+
+                <section id="page-favorites" class="page">
+                    <div class="list-header">
+                        <h3>⭐ 我的收藏</h3>
+                    </div>
+                    <div id="favorites-list" class="word-list"></div>
+                    <div id="favorites-empty" class="empty-state" style="display:none">
+                        <div class="empty-icon">💡</div>
+                        <h3>还没有收藏单词</h3>
+                        <p>背单词时点击⭐收藏吧~</p>
+                    </div>
+                </section>
+
+                <section id="page-errors" class="page">
+                    <div class="list-header">
+                        <h3>❌ 错题本</h3>
+                        <button class="btn btn-outline btn-sm" onclick="clearErrorBook()">清空错题本</button>
+                    </div>
+                    <div id="errors-list" class="word-list"></div>
+                    <div id="errors-empty" class="empty-state" style="display:none">
+                        <div class="empty-icon">🎉</div>
+                        <h3>错题本为空</h3>
+                        <p>继续保持~</p>
+                    </div>
+                </section>
+
+                <section id="page-stats" class="page">
+                    <h3>📊 学习统计</h3>
+                    <div class="stats-grid">
+                        <div class="card stat-item">
+                            <span class="stat-num" id="stat-total-learned">0</span>
+                            <span class="stat-desc">累计学习</span>
+                        </div>
+                        <div class="card stat-item">
+                            <span class="stat-num" id="stat-mastered">0</span>
+                            <span class="stat-desc">已掌握</span>
+                        </div>
+                        <div class="card stat-item">
+                            <span class="stat-num" id="stat-favorites">0</span>
+                            <span class="stat-desc">收藏数</span>
+                        </div>
+                        <div class="card stat-item">
+                            <span class="stat-num" id="stat-errors">0</span>
+                            <span class="stat-desc">错题数</span>
+                        </div>
+                        <div class="card stat-item">
+                            <span class="stat-num" id="stat-streak">0</span>
+                            <span class="stat-desc">最长连续</span>
+                        </div>
+                        <div class="card stat-item">
+                            <span class="stat-num" id="stat-total-days">0</span>
+                            <span class="stat-desc">学习天数</span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4>词库掌握情况</h4>
+                        <div id="category-stats"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <nav id="bottom-nav">
+            <a href="#" data-page="home" class="bottom-nav-item active">
+                <span>🏠</span><small>首页</small>
+            </a>
+            <a href="#" data-page="learn" class="bottom-nav-item">
+                <span>📝</span><small>背词</small>
+            </a>
+            <a href="#" data-page="review" class="bottom-nav-item">
+                <span>🔄</span><small>复习</small>
+            </a>
+            <a href="#" data-page="wordlist" class="bottom-nav-item">
+                <span>📚</span><small>词库</small>
+            </a>
+            <a href="#" data-page="stats" class="bottom-nav-item">
+                <span>📊</span><small>统计</small>
+            </a>
+        </nav>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="js/data.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/learning.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>
